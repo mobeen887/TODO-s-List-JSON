@@ -1,5 +1,8 @@
-function getAndUpdate() {
-    console.log("Updating List");
+/**
+ * Function To Add New Task in the JSON List
+ */
+function addTask() {
+
     tit = document.getElementById("title").value;
     desc = document.getElementById("description").value;
     
@@ -11,21 +14,42 @@ function getAndUpdate() {
 
     if (localStorage.getItem('itemsJson') == null) {
         itemsJsonArray = [];
-        itemsJsonArray.push([tit, desc, tdDate])
+        itemJsonObj = {'title':tit, 'description':desc, 'date':tdDate};
+        // console.log(itemJsonObj);
+
+        itemsJsonArray.push(itemJsonObj);
         localStorage.setItem('itemsJson',JSON.stringify(itemsJsonArray))
     }else{
         itemsJsonArrayStr = localStorage.getItem('itemsJson')
         itemsJsonArray = JSON.parse(itemsJsonArrayStr);
-        itemsJsonArray.push([tit, desc, tdDate]);
+        itemJsonObj = {'title':tit, 'description':desc, 'date':tdDate};
+        // console.log(itemJsonObj);
+
+        itemsJsonArray.push(itemJsonObj);
         localStorage.setItem('itemsJson', JSON.stringify(itemsJsonArray));
     }
-    update();
+    updateTable();
 }
 
-function update(){
+/**
+ * Event Listener to start add task process 
+ * when OnClick Add button on Modal box
+ */
+add = document.getElementById("add");
+
+add.addEventListener("click", ()=>{
+    addTask();
+    window.location.reload();
+});
+updateTable();
+
+/**
+ * Update Table function to update table on every add,edit and delete activity.
+ */
+function updateTable(){
     if (localStorage.getItem('itemsJson') == null) {
         itemsJsonArray = [];
-        localStorage.setItem('itemsJson',JSON.stringify(itemsJsonArray))
+        localStorage.setItem('itemsJson',JSON.stringify(itemsJsonArray));
     }else{
         itemsJsonArrayStr = localStorage.getItem('itemsJson')
         itemsJsonArray = JSON.parse(itemsJsonArrayStr);
@@ -37,11 +61,11 @@ function update(){
         str += `
             <tr class="tr-bar">
             <th scope="row">${index + 1}</th>
-            <td>${element[0]}</td>
-            <td>${element[1]}</td>
-            <td>${element[2]}</td>
+            <td>${element.title}</td>
+            <td>${element.description}</td>
+            <td>${element.date}</td>
             <td>
-            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editTaskModal" onclick="edited(${index})" value="${index}">
+            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editTaskModal" onclick="editTask(${index})" value="${element.title}">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="20" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
             <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -57,45 +81,99 @@ function update(){
     });
     tableBody.innerHTML = str;
 }
-add = document.getElementById("add");
-// add.addEventListener("click", getAndUpdate);
-add.addEventListener("click", ()=>{
-    getAndUpdate();
-    window.location.reload();
-});
-update();
+
+/**
+ * Delete function to delete specific row in the table.
+ */
 function deleted(itemIndex) {
-    console.log("Delete", itemIndex);
+    // console.log("Delete", itemIndex);
     itemsJsonArrayStr = localStorage.getItem('itemsJson')
     itemsJsonArray = JSON.parse(itemsJsonArrayStr);
     //  Delete itemIndex element from the array
-    itemsJsonArray.splice(itemIndex, 1);
-    localStorage.setItem('itemsJson', JSON.stringify(itemsJsonArray));
-    update();
-}
-function edited(itemIndex) {
-    console.log("Edited", itemIndex);
-    //itemsJsonArray.forEach((itemIndex, index)=>{
-        //console.log(index, itemIndex);
-        // if (condition) {
-            
-        // }
-    //})
-    itemsJsonArray.filter(itemIndex);
-    function checkList(){
-        return itemsJsonArray.index == itemIndex;
+    if (confirm("Do you really want to Delete this Task?"
+        )) {
+            itemsJsonArray.splice(itemIndex, 1);
+            localStorage.setItem('itemsJson', JSON.stringify(itemsJsonArray));
+            updateTable();
     }
-        console.log(checkList);
-        // function checkList(itemsJ) {
-        //     return age == 18;
-        // }
 }
-function clearStorage(params) {
+
+/**
+ *  Edit function to update the Specific JSON Row in the Array
+ */
+function saveEditTask() {
+    
+    id = document.getElementById("editId").value;
+    tit = document.getElementById("editTitle").value;
+    desc = document.getElementById("editDesc").value;
+    
+    tDate = new Date();
+    date = tDate.toLocaleDateString();
+    time = tDate.getHours() + ' : ' + tDate.getMinutes() + ' : ' + tDate.getSeconds();
+    
+    tdDate = "<small>"+time+"</small>"+" <b>|</b> "+"<small>"+date+"</small>";    
+    
+    if (localStorage.getItem('itemsJson') != null) {
+
+        itemsJsonArrayStr = localStorage.getItem('itemsJson');
+        itemsJsonArray = JSON.parse(itemsJsonArrayStr);
+        
+        itemsJsonArray[id].title = tit;
+        itemsJsonArray[id].description = desc;
+        itemsJsonArray[id].date = tdDate;
+        // console.log(itemsJsonArray[id]);
+        // console.log(itemsJsonArray);
+        localStorage.setItem('itemsJson', JSON.stringify(itemsJsonArray));
+    }
+    updateTable();
+}
+
+/**
+ *  Edit function to start edit of the Specific row of the Table
+ */
+function editTask(itemIndex) {
+        
+        console.log("Edit Task", itemIndex);
+        
+        let filterRow = [];
+        itemsJsonArrayStr = localStorage.getItem('itemsJson');
+        itemsJsonArray = JSON.parse(itemsJsonArrayStr);
+        filterRow = itemsJsonArray[itemIndex];
+        
+        // console.log(filterRow);
+
+        // Populate the Model
+        let modalLabel = document.getElementById("editTaskModalLabel");
+        let modalId = document.getElementById("editId");
+        let modalTitle = document.getElementById("editTitle");
+        let modalDesc = document.getElementById("editDesc");
+
+        modalLabel.innerHTML = "Editing "+filterRow.title;
+        modalId.value = itemIndex
+        modalTitle.value = filterRow.title;
+        modalDesc.innerHTML = filterRow.description;        
+         
+}
+/**
+ * Event Listener to save editing task process 
+ * when OnClick edit button on Modal box
+ */
+saveEdit = document.getElementById("edit");
+
+saveEdit.addEventListener("click", ()=>{
+    saveEditTask();
+    window.location.reload();
+});
+
+/**
+ * function to clear complete localstorage of the browser.
+ */
+function clearStorage() {
     if (confirm(
         "Do you really want clear the table?"
     )) {
-    console.log('Clearing the Storage');
+    // console.log('Clearing the Storage');
     localStorage.clear();
-    update();
+    updateTable();
     }
 }

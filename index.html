@@ -116,22 +116,23 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="editTaskModalLabel">Edit Task</h5>
+            <h5 class="modal-title" id="editTaskModalLabel"></h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
               <div class="form-floating mb-3">
-                  <input type="title" class="form-control" id="title" aria-describedby="title" placeholder="Enter title for the list....">
+                <input type="hidden" id="editId">
+                  <input type="title" class="form-control" id="editTitle" aria-describedby="title" placeholder="Enter title for the list....">
                   <label for="title" class="form-label">Title</label>
               </div>
               <div class="form-floating">
-                  <textarea class="form-control" id="description" placeholder="Enter Description of the task..."></textarea>
+                  <textarea class="form-control" id="editDesc" placeholder="Enter Description of the task..."></textarea>
                   <label for="description" class="form-label">Description</label>
               </div>
           </div>
           <div class="modal-footer">
               <div class="btn-group" role="group">
-                  <button type="submit" id="add" class="btn btn-sm btn-outline-primary">Update List</button>
+                  <button type="submit" id="edit" class="btn btn-sm btn-outline-primary">Update List</button>
                   <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
               </div>
           </div>
