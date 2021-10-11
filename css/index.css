@@ -9,3 +9,22 @@
     bottom: 0;
     width: 100%;
   }
+
+  .search-bar {
+    /* background-image: url('../img/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat; */
+
+    margin: 0px 15px 0px 0px;
+    border: none;
+    outline: none;
+    border-bottom: 1px solid white;
+    background-color: #212529 !important;
+    color: whitesmoke;
+  }
+
+  .search-bar:active {
+    border: none;  
+    outline:none;
+    color: whitesmoke;
+  }
